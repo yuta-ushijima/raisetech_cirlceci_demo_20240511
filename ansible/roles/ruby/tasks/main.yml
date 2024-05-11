@@ -1,0 +1,45 @@
+---
+# tasks file for ruby
+- name: Install dependencies packages for ruby
+  become: yes
+  ansible.builtin.yum:
+    name: "{{ ruby_dependencies_pkg }}"
+    state: present
+
+- name: SetUp rbenv
+  ansible.builtin.git:
+    repo: https://github.com/sstephenson/rbenv.git
+    dest: /usr/local/rbenv
+
+- name: Edit bashrc
+  ansible.builtin.template:
+    src: roles/ruby/templates/rbenv_system.sh.j2
+    dest: /etc/profile.d/rbenv_system.sh
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Install ruby-build
+  ansible.builtin.git:
+    repo: https://github.com/sstephenson/ruby-build.git
+    dest: /usr/local/rbenv/plugins/ruby-build
+
+- name: Check installed ruby versions exits
+  ansible.builtin.shell:
+    cmd: bash -lc "rbenv versions --bare"
+  changed_when: false
+  register: installed_ruby_versions_check
+
+- name: Install Specific ruby version
+  shell: bash -lc "rbenv install 3.2.3"
+  when: "'3.2.3' not in installed_ruby_versions_check.stdout_lines"
+
+- name: Check global ruby version
+  ansible.builtin.shell:
+    cmd: bash -lc "rbenv global"
+  changed_when: false
+  register: global_ruby_version_check
+
+- name: Set global ruby version
+  shell: bash -lc "rbenv global 3.2.3"
+  when: "'3.2.3' not in global_ruby_version_check.stdout_lines"
