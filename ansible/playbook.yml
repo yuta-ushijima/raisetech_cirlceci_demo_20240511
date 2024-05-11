@@ -1,11 +1,6 @@
 ---
 - hosts: all
   become: yes
-  tasks:
-    - name: Install git
-      ansible.builtin.yum:
-        name: git
-        state: present
-        lock_timeout: 60
   roles:
+    - { role: git }
     - { role: ruby }
