@@ -12,9 +12,6 @@ jobs:
     steps:
       - checkout
       - aws-cloudformation/deploy:
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          aws-region: AWS_DEFAULT_REGION
           stack-name: "sampleStack"
           template-file-path: "cloudformation/web.yml"
 
