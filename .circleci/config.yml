@@ -2,6 +2,7 @@
 # See: https://circleci.com/docs/configuration-reference
 version: 2.1
 orbs:
+  aws-cli: circleci/aws-cli@4.1.3
   aws-cloudformation: orbss/aws-cloudformation@0.1.6
 
 # Define a job to be invoked later in a workflow.
@@ -11,6 +12,10 @@ jobs:
     executor: aws-cloudformation/default
     steps:
       - checkout
+      - aws-cli/setup:
+          aws_access_key_id: AWS_ACCESS_KEY_ID
+          aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+          region: AWS_DEFAULT_REGION
       - aws-cloudformation/deploy:
           stack-name: "sampleStack"
           template-file-path: "cloudformation/web.yml"
